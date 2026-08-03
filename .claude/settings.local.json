@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"C:/Productive/7th sem/mcq/.claude\")",
+      "WebSearch",
+      "Bash(python -c ' *)"
+    ]
+  }
+}

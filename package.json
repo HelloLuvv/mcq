@@ -1,0 +1,34 @@
+{
+  "name": "mcq",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "seed": "node scripts/seedDatabase.js",
+    "check:supabase": "node scripts/checkSupabase.js",
+    "sync:users": "node scripts/syncUsers.js",
+    "test:e2e:install": "npx playwright install",
+    "test:e2e": "npx playwright test"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.109.0",
+    "bootstrap": "^5.3.8",
+    "dotenv": "^17.4.2",
+    "pg": "^8.22.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "oxlint": "^1.71.0",
+    "vite": "^8.1.1"
+  }
+}
