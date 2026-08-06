@@ -9,6 +9,15 @@ export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false)
   const navigate = useNavigate()
 
+  const checkAdminAndRedirect = async (user) => {
+    const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
+    if (adminEmail && user.email && user.email.toLowerCase() === adminEmail.toLowerCase()) {
+      navigate('/admin')
+    } else {
+      navigate('/student')
+    }
+  }
+
   const handleAuth = async () => {
     setMessage('')
     try {
@@ -20,9 +29,9 @@ export default function Auth() {
         }
         if (data.user && !data.session) {
           setMessage('Account created! Check your email for confirmation.')
-        } else {
+        } else if (data.user) {
           setMessage('Signed up successfully')
-          navigate('/student')
+          await checkAdminAndRedirect(data.user)
         }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password })
@@ -31,7 +40,9 @@ export default function Auth() {
           return
         }
         setMessage('Signed in successfully')
-        navigate('/student')
+        if (data.user) {
+          await checkAdminAndRedirect(data.user)
+        }
       }
     } catch (err) {
       setMessage(err.message || 'An unexpected error occurred')
