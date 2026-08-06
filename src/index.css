@@ -21,6 +21,14 @@
   --accent-2: #4f8cff;
   --accent-2-soft: rgba(79, 140, 255, 0.18);
 
+  --success: #10b981;
+  --success-soft: rgba(16, 185, 129, 0.18);
+  --danger: #ef4444;
+  --danger-soft: rgba(239, 68, 68, 0.18);
+  --danger-strong: #dc2626;
+  --warning: #f59e0b;
+  --warning-soft: rgba(245, 158, 11, 0.18);
+
   --btn-secondary-bg: rgba(255, 255, 255, 0.08);
   --btn-secondary-border: rgba(255, 255, 255, 0.16);
   --btn-secondary-hover: rgba(255, 255, 255, 0.14);
@@ -73,6 +81,14 @@
   --accent-ink: #24160a;
   --accent-2: #2f6fd6;
   --accent-2-soft: rgba(47, 111, 214, 0.12);
+
+  --success: #059669;
+  --success-soft: rgba(5, 150, 105, 0.18);
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.18);
+  --danger-strong: #b91c1c;
+  --warning: #d97706;
+  --warning-soft: rgba(217, 119, 6, 0.18);
 
   --btn-secondary-bg: rgba(15, 35, 65, 0.05);
   --btn-secondary-border: rgba(15, 35, 65, 0.12);

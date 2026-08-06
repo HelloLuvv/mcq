@@ -20,7 +20,7 @@ if (!url || !anon) {
   process.exit(2)
 }
 
-const target = `${url}/rest/v1/`
+const target = `${url}/auth/v1/health`
 
 console.log('Checking reachability to Supabase project...')
 
@@ -36,6 +36,7 @@ fetch(target, {
     return res.text()
   })
   .then((body) => {
+    console.log('Response:', body)
     console.log('Response length:', body.length)
     process.exit(0)
   })

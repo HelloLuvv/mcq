@@ -73,6 +73,21 @@ async function run() {
     )
   `)
 
+  await client.query(`
+    CREATE TABLE IF NOT EXISTS mock_test_results (
+      id serial PRIMARY KEY,
+      supabase_user_id uuid,
+      test_id text,
+      test_title text,
+      score real,
+      correct integer,
+      wrong integer,
+      unattempted integer,
+      percentage text,
+      created_at timestamptz DEFAULT now()
+    )
+  `)
+
   // insert questions
   for (const q of practiceQuestions) {
     const res = await client.query(

@@ -6,25 +6,37 @@ export default function Auth() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
+  const [isSignUp, setIsSignUp] = useState(false)
+  const navigate = useNavigate()
 
-  const signUp = async () => {
+  const handleAuth = async () => {
     setMessage('')
-    const { data, error } = await supabase.auth.signUp({ email, password })
-    if (error) setMessage(error.message)
-    else setMessage('Check your email for confirmation (if enabled).')
-  }
-
-  const signIn = async () => {
-    setMessage('')
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) setMessage(error.message)
-    else {
-      setMessage('Signed in successfully')
-      navigate('/student')
+    try {
+      if (isSignUp) {
+        const { data, error } = await supabase.auth.signUp({ email, password })
+        if (error) {
+          setMessage(error.message)
+          return
+        }
+        if (data.user && !data.session) {
+          setMessage('Account created! Check your email for confirmation.')
+        } else {
+          setMessage('Signed up successfully')
+          navigate('/student')
+        }
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error) {
+          setMessage(error.message)
+          return
+        }
+        setMessage('Signed in successfully')
+        navigate('/student')
+      }
+    } catch (err) {
+      setMessage(err.message || 'An unexpected error occurred')
     }
   }
-
-  const navigate = useNavigate()
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -36,7 +48,7 @@ export default function Auth() {
       <header className="page-header">
         <div>
           <p className="eyebrow">Authentication</p>
-          <h1>Sign in or create an account</h1>
+          <h1>{isSignUp ? 'Create an account' : 'Sign in'}</h1>
         </div>
       </header>
 
@@ -49,12 +61,26 @@ export default function Auth() {
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
           <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-            <button className="btn btn-primary" onClick={signIn}>Sign in</button>
-            <button className="btn btn-secondary" onClick={signUp}>Create account</button>
-            <button className="btn btn-secondary" onClick={handleSignOut}>Sign out</button>
+            <button className="btn btn-primary" onClick={handleAuth}>
+              {isSignUp ? 'Sign up' : 'Sign in'}
+            </button>
+            <button className="btn btn-secondary" onClick={handleSignOut}>
+              Sign out
+            </button>
           </div>
 
-          {message && <p style={{ marginTop: 12 }}>{message}</p>}
+          {message && <p style={{ marginTop: 12, color: message.includes('successfully') || message.includes('created') ? 'green' : 'red' }}>{message}</p>}
+
+          <p style={{ marginTop: 12 }}>
+            <button 
+              type="button" 
+              className="btn btn-link" 
+              onClick={() => { setIsSignUp(!isSignUp); setMessage(''); }}
+              style={{ background: 'none', border: 'none', color: 'var(--color-accent)', cursor: 'pointer', padding: 0 }}
+            >
+              {isSignUp ? 'Already have an account? Sign in' : 'Need an account? Sign up'}
+            </button>
+          </p>
 
           <p style={{ marginTop: 12 }}>
             <Link to="/">Back to home</Link>

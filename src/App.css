@@ -201,6 +201,21 @@
   background: var(--btn-secondary-hover);
 }
 
+.btn-link {
+  color: var(--accent-2);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  color: var(--accent);
+}
+
 .stats-row {
   display: flex;
   gap: 12px;
@@ -522,4 +537,101 @@ input[type='password']:focus {
     gap: 8px;
     align-items: flex-start;
   }
+}
+
+/* Mock Test Styles */
+.timer {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  min-width: 100px;
+  text-align: center;
+}
+
+.timer.warning {
+  border-color: var(--danger);
+  color: var(--danger);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.question-nav-btn {
+  border: 1px solid var(--surface-border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.question-nav-btn:hover {
+  border-color: var(--accent-2);
+}
+
+.question-nav-btn.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+.question-nav-btn.answered {
+  border-color: var(--accent-2);
+}
+
+.correct-badge {
+  background: var(--success-soft);
+  color: var(--success);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.wrong-badge {
+  background: var(--danger-soft);
+  color: var(--danger);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.unattempted-badge {
+  background: var(--warning-soft);
+  color: var(--warning);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.stat-card.success {
+  border-left: 4px solid var(--success);
+}
+
+.stat-card.danger {
+  border-left: 4px solid var(--danger);
+}
+
+.stat-card.warning {
+  border-left: 4px solid var(--warning);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: var(--danger-strong);
 }
