@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
-import { supabase } from '../lib/supabaseClient'
+import { isAdminUser } from '../lib/auth'
 
 export default function ProtectedRoute({ children, adminRequired = false }) {
   const [loading, setLoading] = useState(true)
@@ -9,10 +9,7 @@ export default function ProtectedRoute({ children, adminRequired = false }) {
   useEffect(() => {
     let mounted = true
     ;(async () => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser()
+      const { data: { user }, error } = await supabase.auth.getUser()
       if (!mounted) return
       if (error || !user) {
         setAuthorized(false)
@@ -20,8 +17,7 @@ export default function ProtectedRoute({ children, adminRequired = false }) {
         return
       }
       if (adminRequired) {
-        const admin = import.meta.env.VITE_ADMIN_EMAIL
-        setAuthorized(admin && user.email && user.email.toLowerCase() === admin.toLowerCase())
+        setAuthorized(await isAdminUser())
       } else {
         setAuthorized(true)
       }

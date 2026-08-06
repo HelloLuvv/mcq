@@ -17,9 +17,13 @@ async function run() {
   // auth.users is available when connected as postgres
   const res = await client.query(`SELECT id, email FROM auth.users`)
   for (const row of res.rows) {
+    // Check if this is the admin email
+    const adminEmail = process.env.VITE_ADMIN_EMAIL
+    const role = (adminEmail && row.email.toLowerCase() === adminEmail.toLowerCase()) ? 'admin' : 'student'
+    
     await client.query(
-      `INSERT INTO users (email, supabase_id, role) VALUES ($1,$2,'student') ON CONFLICT (email) DO UPDATE SET supabase_id=EXCLUDED.supabase_id`,
-      [row.email, row.id],
+      `INSERT INTO users (email, supabase_id, role) VALUES ($1,$2,$3) ON CONFLICT (email) DO UPDATE SET supabase_id=EXCLUDED.supabase_id, role=EXCLUDED.role`,
+      [row.email, row.id, role],
     )
   }
 

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { Link, useNavigate } from 'react-router-dom'
+import { isAdminUser } from '../lib/auth'
 
 export default function Auth() {
   const [email, setEmail] = useState('')
@@ -10,8 +11,8 @@ export default function Auth() {
   const navigate = useNavigate()
 
   const checkAdminAndRedirect = async (user) => {
-    const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
-    if (adminEmail && user.email && user.email.toLowerCase() === adminEmail.toLowerCase()) {
+    const admin = await isAdminUser()
+    if (admin) {
       navigate('/admin')
     } else {
       navigate('/student')
