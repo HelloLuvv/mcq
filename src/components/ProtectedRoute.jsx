@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
+import { supabase } from '../lib/supabaseClient'
 import { isAdminUser } from '../lib/auth'
 
 export default function ProtectedRoute({ children, adminRequired = false }) {

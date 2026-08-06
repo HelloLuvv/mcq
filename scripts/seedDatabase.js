@@ -39,11 +39,12 @@ async function run() {
     )
   `)
 
+  await client.query(`DROP TABLE IF EXISTS mock_tests`)
   await client.query(`
-    CREATE TABLE IF NOT EXISTS mock_tests (
-      id integer PRIMARY KEY,
+    CREATE TABLE mock_tests (
+      id text PRIMARY KEY,
       title text,
-      duration text,
+      duration integer,
       questions integer,
       level text
     )
