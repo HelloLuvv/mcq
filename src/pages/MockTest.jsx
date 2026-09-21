@@ -218,7 +218,21 @@ function MockTest() {
   }
 
   const handleAnswer = (questionId, answer) => {
-    setAnswers(prev => ({ ...prev, [questionId]: answer }))
+    const nextAnswers = { ...answers, [questionId]: answer }
+    setAnswers(nextAnswers)
+
+    if (sessionId && started && !submitted) {
+      lastSavedAnswersRef.current = nextAnswers
+      lastSavedPointerRef.current = pointer
+      lastSavedTimeRef.current = timeLeft
+      saveSession({
+        answers: nextAnswers,
+        current_index: pointer,
+        time_left: timeLeft,
+        questions,
+        question_order: order
+      })
+    }
   }
 
   const handleSubmit = useCallback(async () => {
