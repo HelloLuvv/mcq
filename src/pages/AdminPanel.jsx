@@ -1,6 +1,4 @@
-import { adminStats } from '../data'
 import ThemeToggle from '../components/ThemeToggle'
-import ProtectedRoute from '../components/ProtectedRoute'
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { practiceQuestions, mockTests } from '../data'

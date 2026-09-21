@@ -19,6 +19,8 @@ function StudentPortal() {
   const [endReached, setEndReached] = useState(false)
   const [userStats, setUserStats] = useState(null)
   const [loadingStats, setLoadingStats] = useState(true)
+  const [activeSessions, setActiveSessions] = useState([])
+  const [loadingSessions, setLoadingSessions] = useState(true)
 
   // Filter questions by exam and prepare a shuffled non-repeating order
   const filtered = useMemo(() => questions.filter((q) => q.exam === selectedExam), [questions, selectedExam])
@@ -34,7 +36,7 @@ function StudentPortal() {
     setPointer(0)
     setSelectedAnswer('')
     setSubmitted(false)
-  }, [selectedExam])
+  }, [selectedExam, filtered])
 
   // Fetch user performance stats
   useEffect(() => {
@@ -44,7 +46,7 @@ function StudentPortal() {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) { if (mounted) setLoadingStats(false); return }
 
-        const [{ data: attempts, count: attemptsCount }, { data: results, count: resultsCount }] = await Promise.all([
+        const [{ data: attempts, count: _attemptsCount }, { data: results, count: _resultsCount }] = await Promise.all([
           supabase.from('attempts').select('question_id, correct, created_at').eq('supabase_user_id', user.id).order('created_at', { ascending: false }),
           supabase.from('mock_test_results').select('score, correct, wrong, unattempted, percentage, test_title, created_at').eq('supabase_user_id', user.id).order('created_at', { ascending: false }),
         ])
@@ -111,6 +113,39 @@ function StudentPortal() {
       }
     })()
   }, [selectedExam])
+
+  // Fetch active (unfinished) test sessions
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { if (mounted) setLoadingSessions(false); return }
+
+        const { data: sessions, error } = await supabase
+          .from('test_sessions')
+          .select('id, test_id, test_title, question_order, answers, current_index, time_left, duration, started_at, last_updated')
+          .eq('supabase_user_id', user.id)
+          .eq('completed', false)
+          .order('last_updated', { ascending: false })
+
+        if (error) throw error
+
+        if (mounted) {
+          const validSessions = (sessions || []).filter(session => {
+            const elapsed = Math.floor((Date.now() - new Date(session.started_at).getTime()) / 1000)
+            const timeLeft = Math.max(0, session.duration - elapsed)
+            return timeLeft > 0
+          })
+          setActiveSessions(validSessions)
+        }
+      } catch (e) {
+        console.error('Failed to load active sessions:', e.message)
+      } finally {
+        if (mounted) setLoadingSessions(false)
+      }
+    })()
+  }, [])
 
   const current = questions.find((p) => p.id === order[pointer]) || filtered[0] || null
 
@@ -295,6 +330,51 @@ function StudentPortal() {
             ))}
           </div>
         </div>
+
+        {activeSessions.length > 0 && (
+          <div className="panel">
+            <h2>Continue Test</h2>
+            {loadingSessions ? (
+              <p>Loading...</p>
+            ) : (
+              <div className="stack-list">
+                {activeSessions.map((session) => {
+                  const elapsed = Math.floor((Date.now() - new Date(session.started_at).getTime()) / 1000)
+                  const timeLeft = Math.max(0, session.duration - elapsed)
+                  const answeredCount = Object.keys(session.answers || {}).length
+                  const totalQuestions = session.question_order?.length || 0
+                  const progressPercent = totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0
+                  const mins = Math.floor(timeLeft / 60)
+                  const secs = timeLeft % 60
+
+                  return (
+                    <Link
+                      key={session.id}
+                      to={`/mock-test/${session.test_id}`}
+                      className="list-card continue-test-card"
+                      style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', gap: 12 }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+                        <div style={{ flex: 1 }}>
+                          <h3 style={{ margin: 0 }}>{session.test_title}</h3>
+                          <p style={{ margin: '4px 0 0', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                            {answeredCount}/{totalQuestions} answered • {mins}:{secs.toString().padStart(2, '0')} remaining
+                          </p>
+                        </div>
+                        <span className="pill" style={{ background: 'var(--accent-2-soft)', color: 'var(--accent-2)', borderColor: 'var(--accent-2)', fontSize: '0.8rem', whiteSpace: 'nowrap' }}>
+                          Resume
+                        </span>
+                      </div>
+                      <div className="progress-bar-container" style={{ height: 6, background: 'var(--surface-border)', borderRadius: 999, overflow: 'hidden' }}>
+                        <div className="progress-bar-fill" style={{ height: '100%', width: `${progressPercent}%`, background: 'linear-gradient(90deg, var(--accent), var(--accent-2))', borderRadius: 999, transition: 'width 0.3s ease' }} />
+                      </div>
+                    </Link>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="panel">
           <h2>Performance Dashboard</h2>

@@ -1,4 +1,3 @@
-import fs from 'fs'
 import { Client } from 'pg'
 import dotenv from 'dotenv'
 import { practiceQuestions, mockTests } from '../src/data.js'
@@ -91,7 +90,7 @@ async function run() {
 
   // insert questions
   for (const q of practiceQuestions) {
-    const res = await client.query(
+    await client.query(
       `INSERT INTO questions (id, topic, exam, question, options, answer, explanation)
        VALUES ($1,$2,$3,$4,$5,$6,$7)
        ON CONFLICT (id) DO UPDATE SET topic=EXCLUDED.topic, exam=EXCLUDED.exam, question=EXCLUDED.question, options=EXCLUDED.options, answer=EXCLUDED.answer, explanation=EXCLUDED.explanation`,

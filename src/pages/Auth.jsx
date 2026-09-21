@@ -10,7 +10,7 @@ export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(false)
   const navigate = useNavigate()
 
-  const checkAdminAndRedirect = async (user) => {
+  const checkAdminAndRedirect = async (_user) => {
     const admin = await isAdminUser()
     if (admin) {
       navigate('/admin')
