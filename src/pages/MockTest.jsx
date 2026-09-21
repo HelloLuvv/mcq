@@ -175,26 +175,6 @@ function MockTest() {
     setOrder(questionOrder)
   }, [test, started])
 
-  useEffect(() => {
-    if (!started || submitted || timeLeft <= 0) return
-
-    if (!testStartTimeRef.current) {
-      testStartTimeRef.current = Date.now()
-    }
-
-    timerRef.current = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          handleSubmit()
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
-
-    return () => clearInterval(timerRef.current)
-  }, [started, submitted, timeLeft, handleSubmit])
-
   const handleStart = async () => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
@@ -296,6 +276,26 @@ function MockTest() {
 
     setResults(result)
   }, [submitted, questions, answers, test, sessionId, pointer, timeLeft])
+
+  useEffect(() => {
+    if (!started || submitted || timeLeft <= 0) return
+
+    if (!testStartTimeRef.current) {
+      testStartTimeRef.current = Date.now()
+    }
+
+    timerRef.current = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          handleSubmit()
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timerRef.current)
+  }, [started, submitted, timeLeft, handleSubmit])
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60)

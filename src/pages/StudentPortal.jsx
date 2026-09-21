@@ -104,7 +104,7 @@ function StudentPortal() {
           strongTopics,
           recentMocks,
           avgMockAccuracy,
-          totalMocks: resultsCount || 0,
+          totalMocks: _resultsCount || 0,
         })
       } catch (e) {
         console.error('Failed to load stats:', e.message)

@@ -1659,7 +1659,7 @@ export const mockTests = [
     id: 'upsc-mock-1',
     title: 'UPSC Prelims GS Mock Test',
     duration: 120,
-    questions: 28,
+    questions: 23,
     level: 'Advanced',
     exam: 'UPSC',
   },
